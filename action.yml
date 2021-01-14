@@ -1,0 +1,15 @@
+name: 'Setup Eclipse Che'
+description: 'Install and start minikube and Eclipse Che on Github Runner'
+runs:
+  using: 'node12'
+  main: 'lib/index.js'
+inputs:
+  che-url:
+    description: 'Url of the Eclipse Che Server'
+    required: true
+  devfile-url:
+    description: 'Path/URL to the devfile to use for the workspace creation'
+    required: false
+outputs:
+  workspace-url:
+    description: 'URL of the workspace that has been created by Happy Path Tests'
