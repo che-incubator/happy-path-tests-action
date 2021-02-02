@@ -52,11 +52,11 @@ export class ImagesHelper {
     }
 
     // search the images referenced by the devfile
-    const regexpImage = /image: (?<imagename>.*)/gm;
+    const regexpImage = /image: [>-]*\n*(?<imagename>.*)/gm;
     let mImage;
     // eslint-disable-next-line no-null/no-null
     while ((mImage = regexpImage.exec(devfileContent)) !== null) {
-      const imageName = this.matchGroup(mImage, 'imagename');
+      const imageName = this.matchGroup(mImage, 'imagename').trim();
       core.info(`Found ${imageName} in happy path ${path}`);
       images.add(imageName);
     }
@@ -72,11 +72,11 @@ export class ImagesHelper {
         `https://che-plugin-registry-main.surge.sh/v3/plugins/${componentId}/meta.yaml`
       );
       const pluginIdContent = response.data;
-      const pluginRegexpImage = /image: (?<imagename>.*)/gm;
+      const pluginRegexpImage = /image: [>-]*\n*(?<imagename>.*)/gm;
       let mPluginImage;
       // eslint-disable-next-line no-null/no-null
       while ((mPluginImage = pluginRegexpImage.exec(pluginIdContent)) !== null) {
-        const imageName = this.matchGroup(mPluginImage, 'imagename');
+        const imageName = this.matchGroup(mPluginImage, 'imagename').trim();
         core.info(`Found ${imageName} in component id ${componentId}`);
         images.add(imageName);
       }

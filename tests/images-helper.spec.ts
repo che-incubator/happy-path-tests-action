@@ -194,4 +194,49 @@ describe('Test ImagesHelper', () => {
     expect(pullImageSpy.mock.calls[0][0]).toBe('image1');
     expect(pullImageSpy.mock.calls[1][0]).toBe('image2');
   });
+
+  test('findImages (id with yaml appender)', async () => {
+    const readFileSpy = jest.spyOn(fs, 'readFile');
+    const PLUGIN_ID = 'my-plugin';
+    const PLUGIN_IMAGE_1 =
+      'quay.io/eclipse/che-theia@sha256:ef8720bb0bd891d8beed86684fe6cf5c0be682f7cf19708c4fb1f9cf6536e1a7';
+    const PLUGIN_IMAGE_2 =
+      'quay.io/eclipse/che-theia-endpoint-runtime-binary@sha256:77bed604b46d12a4d7c0819272ec6dbce88ff18209e21d75d824af833f131ed8';
+
+    const buffer = Buffer.from(`id: ${PLUGIN_ID}`, 'utf8');
+    readFileSpy.mockResolvedValueOnce(buffer);
+
+    const response = {
+      data: `
+      containers:
+      - name: theia-ide
+        image: 'quay.io/eclipse/che-theia@sha256:ef8720bb0bd891d8beed86684fe6cf5c0be682f7cf19708c4fb1f9cf6536e1a7'
+        env:
+          - name: THEIA_PLUGINS
+            value: 'local-dir:///plugins'
+    initContainers:
+      - name: remote-runtime-injector
+        image: >-
+          quay.io/eclipse/che-theia-endpoint-runtime-binary@sha256:77bed604b46d12a4d7c0819272ec6dbce88ff18209e21d75d824af833f131ed8
+        env:
+          - name: PLUGIN_REMOTE_ENDPOINT_EXECUTABLE
+            value: /remote-endpoint/plugin-remote-endpoint
+        volumes:
+          - name: remote-endpoint
+            mountPath: /remote-endpoint
+            ephemeral: true`,
+    };
+    const axiosGet = jest.spyOn(Axios, 'get') as jest.Mock;
+    axiosGet.mockResolvedValueOnce(response);
+
+    const images = await imagesHelper.findImages('/foo/devfile.yaml');
+    expect(axiosGet).toBeCalled();
+    const axiosCall = axiosGet.mock.calls[0];
+    expect(axiosCall[0]).toBe(`https://che-plugin-registry-main.surge.sh/v3/plugins/${PLUGIN_ID}/meta.yaml`);
+
+    expect(Array.isArray(images)).toBeTruthy();
+    expect(images.length).toBe(2);
+    expect(images[0]).toBe(PLUGIN_IMAGE_1);
+    expect(images[1]).toBe(PLUGIN_IMAGE_2);
+  });
 });
