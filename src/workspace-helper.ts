@@ -28,7 +28,7 @@ export class WorkspaceHelper {
     for (let index = 0; index < iterations; index++) {
       const response = await this.k8sHelper
         .getCoreApi()
-        .listNamespacedPod('eclipse-che', undefined, undefined, undefined, 'status.phase=Running', 'che.workspace_id');
+        .listNamespacedPod('admin-che', undefined, undefined, undefined, 'status.phase=Running', 'che.workspace_id');
       if (response.body && response.body.items.length > 0) {
         core.info('Found a running workspace, do not wait anymore');
         return;
