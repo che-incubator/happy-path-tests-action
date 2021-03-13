@@ -46,7 +46,7 @@ export class HappyPathHelper {
       '-e',
       `TS_SELENIUM_BASE_URL=${cheUrl}`,
       '-e',
-      'TS_SELENIUM_LOG_LEVEL=DEBUG',
+      'TS_SELENIUM_LOG_LEVEL=TRACE',
       '-e',
       'TS_SELENIUM_MULTIUSER=true',
       '-e',
