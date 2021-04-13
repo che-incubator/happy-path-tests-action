@@ -64,19 +64,24 @@ describe('Test Main with stubs', () => {
     const configuration = await main.initConfiguration();
     expect(configuration.cheUrl()).toBe(CHE_URL);
     expect(configuration.devfileUrl()).toBe(defaultLink);
+    expect(configuration.e2eVersion()).toBe('nightly');
   });
 
-  test('configuration with custom devfile url', async () => {
+  test('configuration with custom parameters', async () => {
     const CHE_URL = 'https://foo.bar';
     (core as any).__setInput(Main.CHE_URL, CHE_URL);
 
     const DEVFILE_URL = 'https://foo.baz';
     (core as any).__setInput(Main.DEVFILE_URL, DEVFILE_URL);
 
+    const E2E_VERSION = '1.2.3.4';
+    (core as any).__setInput(Main.E2E_VERSION, E2E_VERSION);
+
     const main = new Main();
     const configuration = await main.initConfiguration();
     expect(configuration.cheUrl()).toBe(CHE_URL);
     expect(configuration.devfileUrl()).toBe(DEVFILE_URL);
+    expect(configuration.e2eVersion()).toBe(E2E_VERSION);
   });
 
   test('success if required parameter is provided', async () => {
@@ -100,5 +105,17 @@ describe('Test Main with stubs', () => {
     expect(mockedConsoleError).toBeCalled();
     expect(returnCode).toBeFalsy();
     expect(launchHappyPathTestsExecuteMethod).toBeCalledTimes(0);
+  });
+
+  test('configuration with stable e2e verson', async () => {
+    const CHE_URL = 'https://foo.bar';
+    (core as any).__setInput(Main.CHE_URL, CHE_URL);
+
+    const E2E_VERSION = 'stable';
+    (core as any).__setInput(Main.E2E_VERSION, E2E_VERSION);
+
+    const main = new Main();
+    const configuration = await main.initConfiguration();
+    expect(configuration.e2eVersion()).toBe('latest');
   });
 });
