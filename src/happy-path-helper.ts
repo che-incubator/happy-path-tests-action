@@ -57,7 +57,7 @@ export class HappyPathHelper {
       'NODE_TLS_REJECT_UNAUTHORIZED=0',
       '-v',
       `${e2eFolder}:/tmp/e2e`,
-      'quay.io/eclipse/che-e2e:nightly',
+      `quay.io/eclipse/che-e2e:${this.configuration.e2eVersion()}`,
     ];
 
     core.info('Launch docker command' + params);

@@ -10,6 +10,9 @@ inputs:
   devfile-url:
     description: 'Path/URL to the devfile to use for the workspace creation'
     required: false
+  e2e-version:
+    description: 'version of the image of test to use. stable is alias to latest. (default: nightly)'
+    required: false
 outputs:
   workspace-url:
     description: 'URL of the workspace that has been created by Happy Path Tests'

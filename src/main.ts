@@ -17,6 +17,7 @@ import { LaunchHappyPath } from './launch-happy-path';
 export class Main {
   public static readonly CHE_URL: string = 'che-url';
   public static readonly DEVFILE_URL: string = 'devfile-url';
+  public static readonly E2E_VERSION: string = 'e2e-version';
 
   async initConfiguration(): Promise<Configuration> {
     const cheUrl = core.getInput(Main.CHE_URL, { required: true });
@@ -28,10 +29,19 @@ export class Main {
     if (!devfileUrl) {
       devfileUrl = path.resolve('che', 'tests', 'e2e', 'files', 'happy-path', 'happy-path-workspace.yaml');
     }
+
+    let e2eVersion = core.getInput(Main.E2E_VERSION, { required: false });
+    if (!e2eVersion || e2eVersion === 'next') {
+      e2eVersion = 'nightly';
+    } else if (e2eVersion === 'stable') {
+      e2eVersion = 'latest';
+    }
+
     // configuration
     return {
       cheUrl: () => cheUrl,
       devfileUrl: () => devfileUrl,
+      e2eVersion: () => e2eVersion,
     };
   }
 

@@ -58,6 +58,11 @@ Mnadatory: URL of the running Eclipse-Che instance
 
 Optional: path or URL to a devfile to use instead of the default devfile.yaml
 
+## e2e-version
+
+Optional: version of the quay.io/eclipse/che-e2e image to use. Default is `nightly`
+2 aliases: `stable` will use `latest` tag and `next` will use `nightly`.
+
 # Output
 
 This action will set outputs to the current step

@@ -24,6 +24,7 @@ jest.mock('execa');
 describe('Test HappyPathHelper', () => {
   let container: Container;
   const cheUrlMethodMock = jest.fn();
+  const e2eVersionMock = jest.fn();
 
   let configuration: any;
   let happyPathHelper: HappyPathHelper;
@@ -32,6 +33,7 @@ describe('Test HappyPathHelper', () => {
     container = new Container();
     configuration = {
       cheUrl: cheUrlMethodMock,
+      e2eVersion: e2eVersionMock,
     };
     container.bind(Configuration).toConstantValue(configuration);
 
@@ -45,6 +47,9 @@ describe('Test HappyPathHelper', () => {
   });
 
   test('start no stdout/stderr', async () => {
+    const fakeVersion = '1.2.3';
+    e2eVersionMock.mockReturnValue(fakeVersion);
+
     const resolveSpy = jest.spyOn(path, 'resolve');
     const E2E_FOLDER = '/foo/e2e-folder';
     const CHE_URL = 'http://my-che';
@@ -59,12 +64,16 @@ describe('Test HappyPathHelper', () => {
 
     expect((execa as any).mock.calls[0][0]).toBe('docker');
     expect((execa as any).mock.calls[0][1][0]).toBe('run');
+    // last parameter is docker image with version
+    expect((execa as any).mock.calls[0][1][30]).toBe(`quay.io/eclipse/che-e2e:${fakeVersion}`);
     expect((core.info as any).mock.calls[1][0]).toContain('Launch docker command');
 
     expect((core.info as any).mock.calls[2][0]).toBe('Waiting...');
   });
 
   test('clone with stdout/stderr', async () => {
+    e2eVersionMock.mockReturnValue('nightly');
+
     const output = { pipe: jest.fn() };
     const err = { pipe: jest.fn() };
     const resolveSpy = jest.spyOn(path, 'resolve');

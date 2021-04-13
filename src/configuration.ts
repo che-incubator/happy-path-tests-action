@@ -11,4 +11,5 @@ export const Configuration = Symbol.for('Configuration');
 export interface Configuration {
   cheUrl(): string;
   devfileUrl(): string;
+  e2eVersion(): string;
 }
