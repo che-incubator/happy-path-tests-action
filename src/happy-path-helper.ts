@@ -44,6 +44,8 @@ export class HappyPathHelper {
       '-e',
       'TS_SELENIUM_WORKSPACE_STATUS_POLLING=20000',
       '-e',
+      'TS_SELENIUM_PREVIEW_WIDGET_DEFAULT_TIMEOUT=20000',
+      '-e',
       `TS_SELENIUM_BASE_URL=${cheUrl}`,
       '-e',
       'TS_SELENIUM_LOG_LEVEL=TRACE',
