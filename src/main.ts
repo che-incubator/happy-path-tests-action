@@ -32,7 +32,7 @@ export class Main {
 
     let e2eVersion = core.getInput(Main.E2E_VERSION, { required: false });
     if (!e2eVersion || e2eVersion === 'next') {
-      e2eVersion = 'nightly';
+      e2eVersion = 'next';
     } else if (e2eVersion === 'stable') {
       e2eVersion = 'latest';
     }

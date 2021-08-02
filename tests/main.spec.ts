@@ -64,7 +64,7 @@ describe('Test Main with stubs', () => {
     const configuration = await main.initConfiguration();
     expect(configuration.cheUrl()).toBe(CHE_URL);
     expect(configuration.devfileUrl()).toBe(defaultLink);
-    expect(configuration.e2eVersion()).toBe('nightly');
+    expect(configuration.e2eVersion()).toBe('next');
   });
 
   test('configuration with custom parameters', async () => {
