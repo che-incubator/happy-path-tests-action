@@ -17,6 +17,7 @@ import Axios from 'axios';
 import { Configuration } from '../src/configuration';
 import { Container } from 'inversify';
 import { ImagesHelper } from '../src/images-helper';
+import { RegexpHelper } from '../src/regexp-helper';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -39,6 +40,7 @@ describe('Test ImagesHelper', () => {
     };
     container.bind(Configuration).toConstantValue(configuration);
 
+    container.bind(RegexpHelper).toSelf().inSingletonScope();
     container.bind(ImagesHelper).toSelf().inSingletonScope();
     imagesHelper = container.get(ImagesHelper);
   });
@@ -105,20 +107,6 @@ describe('Test ImagesHelper', () => {
     expect(Array.isArray(images)).toBeTruthy();
     expect(images.length).toBe(1);
     expect(images[0]).toBe(REFERENCE_IMAGE);
-  });
-
-  test('match', async () => {
-    const regexp1: RegExpExecArray = {
-      groups: {
-        name: 'hello',
-      },
-    } as any;
-    const result1 = imagesHelper.matchGroup(regexp1, 'name');
-    expect(result1).toBe('hello');
-
-    const regexp2: RegExpExecArray = {} as any;
-    const result2 = imagesHelper.matchGroup(regexp2, 'foo');
-    expect(result2).toBe('');
   });
 
   test('pullImage no stdout', async () => {

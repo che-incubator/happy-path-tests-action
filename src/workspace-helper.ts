@@ -14,6 +14,7 @@ import { inject, injectable } from 'inversify';
 
 import { Configuration } from './configuration';
 import { K8sHelper } from './k8s-helper';
+import { RegexpHelper } from './regexp-helper';
 
 @injectable()
 export class WorkspaceHelper {
@@ -22,6 +23,9 @@ export class WorkspaceHelper {
 
   @inject(K8sHelper)
   private k8sHelper: K8sHelper;
+
+  @inject(RegexpHelper)
+  private regexpHelper: RegexpHelper;
 
   async waitWorkspaceStart(timeoutMS = 240000, intervalMS = 5000): Promise<void> {
     const iterations = timeoutMS / intervalMS;
@@ -37,6 +41,27 @@ export class WorkspaceHelper {
       await new Promise(resolve => setTimeout(resolve, intervalMS));
     }
     throw new Error('Waiting too long to have workspace running');
+  }
+
+  async workspaceStop(timeoutMS = 4000): Promise<void> {
+    const { stdout } = await execa('chectl', ['workspace:list']);
+
+    // parse list
+    const regexp = /^.*(?<workspaceId>workspace.*?)\s/gm;
+    let m;
+    let workspaceId;
+    // eslint-disable-next-line no-null/no-null
+    while ((m = regexp.exec(stdout)) !== null) {
+      workspaceId = this.regexpHelper.matchGroup(m, 'workspaceId');
+    }
+    if (!workspaceId) {
+      throw new Error('Unable to stop the workspace. no workspaceId found');
+    }
+    // stop this workspace id
+    await execa('chectl', ['workspace:stop', workspaceId]);
+
+    // pause
+    await new Promise(resolve => setTimeout(resolve, timeoutMS));
   }
 
   async start(): Promise<void> {
@@ -63,5 +88,8 @@ export class WorkspaceHelper {
     core.info(`Detect as workspace URL the value ${workspaceUrl}`);
 
     await this.waitWorkspaceStart();
+
+    // stop it so it's the test that will load it
+    await this.workspaceStop();
   }
 }

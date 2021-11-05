@@ -17,6 +17,7 @@ import { ImagesHelper } from '../src/images-helper';
 import { InversifyBinding } from '../src/inversify-binding';
 import { K8sHelper } from '../src/k8s-helper';
 import { LaunchHappyPath } from '../src/launch-happy-path';
+import { RegexpHelper } from '../src/regexp-helper';
 import { WorkspaceHelper } from '../src/workspace-helper';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -35,6 +36,7 @@ describe('Test InversifyBinding', () => {
     expect(container.isBound(HappyPathHelper)).toBeTruthy();
     expect(container.isBound(ImagesHelper)).toBeTruthy();
     expect(container.isBound(K8sHelper)).toBeTruthy();
+    expect(container.isBound(RegexpHelper)).toBeTruthy();
     expect(container.isBound(WorkspaceHelper)).toBeTruthy();
 
     // config
