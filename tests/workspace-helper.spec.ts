@@ -15,6 +15,7 @@ import * as execa from 'execa';
 import { Configuration } from '../src/configuration';
 import { Container } from 'inversify';
 import { K8sHelper } from '../src/k8s-helper';
+import { RegexpHelper } from '../src/regexp-helper';
 import { WorkspaceHelper } from '../src/workspace-helper';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -43,6 +44,7 @@ describe('Test WorkspaceHelper', () => {
     } as any;
     getCoreApiMethod.mockReturnValue(coreApiMock);
 
+    container.bind(RegexpHelper).toSelf().inSingletonScope();
     container.bind(K8sHelper).toConstantValue(k8sHelper);
     container.bind(Configuration).toConstantValue(configuration);
 
@@ -179,5 +181,38 @@ describe('Test WorkspaceHelper', () => {
     // core.info
     expect(core.info).toBeCalled();
     expect((core.info as any).mock.calls[0][0]).toContain('Found a running workspace, do not wait anymore');
+  });
+
+  test('stop', async () => {
+    const workspaceListStdout = ` Id                        Name                      Namespace Status  Created                  Updated
+    ───────────────────────── ───────────────────────── ───────── ─────── ──────────────────────── ────────────────────────
+    workspaceyoefdrwv4kqztmnh petclinic-dev-environment admin-che STOPPED 2021-11-05T10:02:01.720Z 2021-11-05T10:09:45.694Z`;
+
+    (execa as any).mockResolvedValueOnce({ exitCode: 0, stdout: workspaceListStdout });
+    const workspaceStopStdout = '';
+    (execa as any).mockResolvedValueOnce({ exitCode: 0, stdout: workspaceStopStdout });
+
+    await workspaceHelper.workspaceStop(0);
+
+    expect(execa).toHaveBeenCalledTimes(2);
+    expect((execa as any).mock.calls[0]).toEqual(['chectl', ['workspace:list']]);
+    expect((execa as any).mock.calls[1]).toEqual(['chectl', ['workspace:stop', 'workspaceyoefdrwv4kqztmnh']]);
+  });
+
+  test('stop without finding workspace', async () => {
+    const workspaceListStdout = ` Id                        Name                      Namespace Status  Created                  Updated
+    ───────────────────────── ───────────────────────── ───────── ─────── ──────────────────────── ────────────────────────
+`;
+
+    (execa as any).mockResolvedValueOnce({ exitCode: 0, stdout: workspaceListStdout });
+    const workspaceStopStdout = '';
+    (execa as any).mockResolvedValueOnce({ exitCode: 0, stdout: workspaceStopStdout });
+
+    await expect(workspaceHelper.workspaceStop(0)).rejects.toThrow(
+      'Unable to stop the workspace. no workspaceId found'
+    );
+
+    expect(execa).toHaveBeenCalled();
+    expect((execa as any).mock.calls[0]).toEqual(['chectl', ['workspace:list']]);
   });
 });

@@ -15,9 +15,13 @@ import { inject, injectable } from 'inversify';
 
 import AxiosInstance from 'axios';
 import { Configuration } from './configuration';
+import { RegexpHelper } from './regexp-helper';
 
 @injectable()
 export class ImagesHelper {
+  @inject(RegexpHelper)
+  private regexpHelper: RegexpHelper;
+
   @inject(Configuration)
   private configuration: Configuration;
 
@@ -29,14 +33,6 @@ export class ImagesHelper {
     }
     await imagePullProcess;
     core.info(`Pulling image ${image} done`);
-  }
-
-  matchGroup(regexpArray: RegExpExecArray, groupName: string): string {
-    if (regexpArray.groups && regexpArray.groups[groupName]) {
-      return regexpArray.groups[groupName];
-    } else {
-      return '';
-    }
   }
 
   async findImages(path: string): Promise<string[]> {
@@ -56,7 +52,7 @@ export class ImagesHelper {
     let mImage;
     // eslint-disable-next-line no-null/no-null
     while ((mImage = regexpImage.exec(devfileContent)) !== null) {
-      const imageName = this.matchGroup(mImage, 'imagename').trim();
+      const imageName = this.regexpHelper.matchGroup(mImage, 'imagename').trim();
       core.info(`Found ${imageName} in happy path ${path}`);
       images.add(imageName);
     }
@@ -66,7 +62,7 @@ export class ImagesHelper {
     // eslint-disable-next-line no-null/no-null
     while ((mId = regexpId.exec(devfileContent)) !== null) {
       // need to grab plugin's id
-      const componentId = this.matchGroup(mId, 'componentid');
+      const componentId = this.regexpHelper.matchGroup(mId, 'componentid');
       core.info(`Searching in id ${componentId}`);
       const response = await AxiosInstance.get(
         `https://che-plugin-registry-main.surge.sh/v3/plugins/${componentId}/meta.yaml`
@@ -76,7 +72,7 @@ export class ImagesHelper {
       let mPluginImage;
       // eslint-disable-next-line no-null/no-null
       while ((mPluginImage = pluginRegexpImage.exec(pluginIdContent)) !== null) {
-        const imageName = this.matchGroup(mPluginImage, 'imagename').trim();
+        const imageName = this.regexpHelper.matchGroup(mPluginImage, 'imagename').trim();
         core.info(`Found ${imageName} in component id ${componentId}`);
         images.add(imageName);
       }
@@ -86,7 +82,7 @@ export class ImagesHelper {
     let mReference;
     // eslint-disable-next-line no-null/no-null
     while ((mReference = regexpReference.exec(devfileContent)) !== null) {
-      const reference = this.matchGroup(mReference, 'referencedEntry');
+      const reference = this.regexpHelper.matchGroup(mReference, 'referencedEntry');
       core.info(`Searching in reference ${reference}`);
       const referencedImages = await this.findImages(reference);
       core.info(`Found images ${referencedImages} in reference ${reference}`);
@@ -109,8 +105,8 @@ export class ImagesHelper {
     let m;
     // eslint-disable-next-line no-null/no-null
     while ((m = regexp.exec(stdout)) !== null) {
-      const key = this.matchGroup(m, 'key');
-      const value = this.matchGroup(m, 'value');
+      const key = this.regexpHelper.matchGroup(m, 'key');
+      const value = this.regexpHelper.matchGroup(m, 'value');
       core.info(`Exporting ${key} to ${value}`);
       process.env[key] = value;
     }
