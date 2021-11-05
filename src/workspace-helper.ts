@@ -43,7 +43,11 @@ export class WorkspaceHelper {
     throw new Error('Waiting too long to have workspace running');
   }
 
-  async workspaceStop(timeoutMS = 4000): Promise<void> {
+  async pause(timeoutMS = 100): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, timeoutMS));
+  }
+
+  async workspaceStop(timeoutMS = 60000): Promise<void> {
     const { stdout } = await execa('chectl', ['workspace:list']);
 
     // parse list
@@ -61,7 +65,7 @@ export class WorkspaceHelper {
     await execa('chectl', ['workspace:stop', workspaceId]);
 
     // pause
-    await new Promise(resolve => setTimeout(resolve, timeoutMS));
+    await this.pause(timeoutMS);
   }
 
   async start(): Promise<void> {

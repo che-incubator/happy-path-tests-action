@@ -68,6 +68,10 @@ describe('Test WorkspaceHelper', () => {
     const waitWorkspaceStartSpy = jest.spyOn(workspaceHelper, 'waitWorkspaceStart');
     waitWorkspaceStartSpy.mockResolvedValue();
 
+    // mock workspace stop
+    const workspaceStopSpy = jest.spyOn(workspaceHelper, 'workspaceStop');
+    workspaceStopSpy.mockResolvedValue();
+
     await workspaceHelper.start();
 
     // core.info
@@ -86,6 +90,13 @@ describe('Test WorkspaceHelper', () => {
     expect((core.info as any).mock.calls[2][0]).toBe(`Detect as workspace URL the value ${fakeWorkspaceUrl}`);
 
     expect(waitWorkspaceStartSpy).toBeCalled();
+  });
+
+  test('pause', async () => {
+    const now = new Date().getMilliseconds();
+    await workspaceHelper.pause();
+    const after = new Date().getMilliseconds();
+    expect(after - now).toBeGreaterThan(10);
   });
 
   test('start with stdout/stderr', async () => {
@@ -107,6 +118,10 @@ describe('Test WorkspaceHelper', () => {
     // mock workspace start
     const waitWorkspaceStartSpy = jest.spyOn(workspaceHelper, 'waitWorkspaceStart');
     waitWorkspaceStartSpy.mockResolvedValue();
+
+    // mock workspace stop
+    const workspaceStopSpy = jest.spyOn(workspaceHelper, 'workspaceStop');
+    workspaceStopSpy.mockResolvedValue();
 
     await workspaceHelper.start();
 
@@ -136,6 +151,10 @@ describe('Test WorkspaceHelper', () => {
     // mock workspace start
     const waitWorkspaceStartSpy = jest.spyOn(workspaceHelper, 'waitWorkspaceStart');
     waitWorkspaceStartSpy.mockResolvedValue();
+
+    // mock workspace stop
+    const workspaceStopSpy = jest.spyOn(workspaceHelper, 'workspaceStop');
+    workspaceStopSpy.mockResolvedValue();
 
     await expect(workspaceHelper.start()).rejects.toThrow(
       `Unable to find workspace URL in stdout of workspace:create process. Found ${stdout}`
@@ -208,9 +227,7 @@ describe('Test WorkspaceHelper', () => {
     const workspaceStopStdout = '';
     (execa as any).mockResolvedValueOnce({ exitCode: 0, stdout: workspaceStopStdout });
 
-    await expect(workspaceHelper.workspaceStop(0)).rejects.toThrow(
-      'Unable to stop the workspace. no workspaceId found'
-    );
+    await expect(workspaceHelper.workspaceStop()).rejects.toThrow('Unable to stop the workspace. no workspaceId found');
 
     expect(execa).toHaveBeenCalled();
     expect((execa as any).mock.calls[0]).toEqual(['chectl', ['workspace:list']]);
