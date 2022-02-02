@@ -17,7 +17,6 @@ import { ImagesHelper } from './images-helper';
 import { K8sHelper } from './k8s-helper';
 import { LaunchHappyPath } from './launch-happy-path';
 import { RegexpHelper } from './regexp-helper';
-import { WorkspaceHelper } from './workspace-helper';
 
 export class InversifyBinding {
   private container: Container;
@@ -32,7 +31,6 @@ export class InversifyBinding {
     this.container.bind(ImagesHelper).toSelf().inSingletonScope();
     this.container.bind(K8sHelper).toSelf().inSingletonScope();
     this.container.bind(RegexpHelper).toSelf().inSingletonScope();
-    this.container.bind(WorkspaceHelper).toSelf().inSingletonScope();
 
     this.container.bind(Configuration).toConstantValue(this.configuration);
     this.container.bind(LaunchHappyPath).toSelf().inSingletonScope();

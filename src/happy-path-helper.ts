@@ -22,6 +22,9 @@ export class HappyPathHelper {
 
   async start(): Promise<void> {
     const cheUrl = this.configuration.cheUrl();
+
+    const HAPPY_PATH_TEST_PROJECT = 'https://github.com/che-samples/java-spring-petclinic/tree/devfilev2';
+
     core.info(`Happy path tests will use Eclipse Che URL: ${cheUrl}`);
 
     const e2eFolder = path.resolve('che', 'tests', 'e2e');
@@ -52,11 +55,15 @@ export class HappyPathHelper {
       '-e',
       'TS_SELENIUM_MULTIUSER=true',
       '-e',
-      'TS_SELENIUM_USERNAME=admin',
+      'TS_SELENIUM_USERNAME=che@eclipse.org',
       '-e',
       'TS_SELENIUM_PASSWORD=admin',
       '-e',
       'NODE_TLS_REJECT_UNAUTHORIZED=0',
+      '-e',
+      `TS_SELENIUM_DEVWORKSPACE_URL=${cheUrl}/#${HAPPY_PATH_TEST_PROJECT}`,
+      '-e',
+      'TEST_SUITE=test-devworkspace-happy-path',
       '-v',
       `${e2eFolder}:/tmp/e2e`,
       `quay.io/eclipse/che-e2e:${this.configuration.e2eVersion()}`,
