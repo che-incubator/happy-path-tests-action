@@ -8,7 +8,6 @@
  * SPDX-License-Identifier: EPL-2.0
  ***********************************************************************/
 import * as core from '@actions/core';
-import * as path from 'path';
 
 import { Configuration } from './configuration';
 import { InversifyBinding } from './inversify-binding';
@@ -19,7 +18,8 @@ export class Main {
   public static readonly DEVFILE_URL: string = 'devfile-url';
   public static readonly E2E_VERSION: string = 'e2e-version';
 
-  public static readonly DEFAULT_HAPPY_PATH_DEVFILE_URL: string = 'https://github.com/che-samples/java-spring-petclinic/tree/devfilev2';
+  public static readonly DEFAULT_HAPPY_PATH_DEVFILE_URL: string =
+    'https://github.com/che-samples/java-spring-petclinic/tree/devfilev2';
 
   async initConfiguration(): Promise<Configuration> {
     const cheUrl = core.getInput(Main.CHE_URL, { required: true });

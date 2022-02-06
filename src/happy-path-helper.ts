@@ -61,7 +61,7 @@ export class HappyPathHelper {
       '-e',
       'NODE_TLS_REJECT_UNAUTHORIZED=0',
       '-e',
-      `TS_SELENIUM_DEVWORKSPACE_URL=${cheUrl}/#${HAPPY_PATH_TEST_PROJECT}`,
+      `TS_SELENIUM_DEVWORKSPACE_URL=${cheUrl}/#${devfileUrl}`,
       '-e',
       'TEST_SUITE=test-devworkspace-happy-path',
       '-v',
