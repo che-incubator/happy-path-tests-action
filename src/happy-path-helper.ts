@@ -24,6 +24,9 @@ export class HappyPathHelper {
     const cheUrl = this.configuration.cheUrl();
     core.info(`Happy path tests will use Eclipse Che URL: ${cheUrl}`);
 
+    const devfileUrl = this.configuration.devfileUrl();
+    core.info(`DevFile URL selected to ${devfileUrl}`);
+
     const e2eFolder = path.resolve('che', 'tests', 'e2e');
 
     const params = [
@@ -34,7 +37,9 @@ export class HappyPathHelper {
       '-p',
       '5920:5920',
       '-e',
-      'VIDEO_RECORDING=false',
+      'VIDEO_RECORDING=true',
+      '-e',
+      'TS_SELENIUM_DELAY_BETWEEN_SCREENSHOTS=3000',
       '-e',
       'TS_SELENIUM_HEADLESS=false',
       '-e',
@@ -50,13 +55,15 @@ export class HappyPathHelper {
       '-e',
       'TS_SELENIUM_LOG_LEVEL=TRACE',
       '-e',
-      'TS_SELENIUM_MULTIUSER=true',
-      '-e',
-      'TS_SELENIUM_USERNAME=admin',
+      'TS_SELENIUM_USERNAME=che@eclipse.org',
       '-e',
       'TS_SELENIUM_PASSWORD=admin',
       '-e',
       'NODE_TLS_REJECT_UNAUTHORIZED=0',
+      '-e',
+      `TS_SELENIUM_DEVWORKSPACE_URL=${cheUrl}/#${devfileUrl}`,
+      '-e',
+      'TEST_SUITE=test-devworkspace-happy-path',
       '-v',
       `${e2eFolder}:/tmp/e2e`,
       `quay.io/eclipse/che-e2e:${this.configuration.e2eVersion()}`,

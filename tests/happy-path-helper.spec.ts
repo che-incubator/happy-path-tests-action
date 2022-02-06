@@ -65,7 +65,8 @@ describe('Test HappyPathHelper', () => {
     expect((execa as any).mock.calls[0][0]).toBe('docker');
     expect((execa as any).mock.calls[0][1][0]).toBe('run');
     // last parameter is docker image with version
-    expect((execa as any).mock.calls[0][1][32]).toBe(`quay.io/eclipse/che-e2e:${fakeVersion}`);
+
+    expect((execa as any).mock.calls[0][1][36]).toBe(`quay.io/eclipse/che-e2e:${fakeVersion}`);
     expect((core.info as any).mock.calls[1][0]).toContain('Launch docker command');
 
     expect((core.info as any).mock.calls[2][0]).toBe('Waiting...');

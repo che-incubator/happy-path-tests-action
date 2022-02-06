@@ -4,7 +4,6 @@ coverage
 .vscode
 node_modules
 dist
-lib
 yarn-error.log
 publish.sh
 .eslintcache

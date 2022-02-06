@@ -14,7 +14,6 @@ import { inject, injectable } from 'inversify';
 import { CheHelper } from './che-helper';
 import { HappyPathHelper } from './happy-path-helper';
 import { ImagesHelper } from './images-helper';
-import { WorkspaceHelper } from './workspace-helper';
 
 @injectable()
 export class LaunchHappyPath {
@@ -23,9 +22,6 @@ export class LaunchHappyPath {
 
   @inject(CheHelper)
   private cheHelper: CheHelper;
-
-  @inject(WorkspaceHelper)
-  private workspaceHelper: WorkspaceHelper;
 
   @inject(HappyPathHelper)
   private happyPathHelper: HappyPathHelper;
@@ -36,9 +32,6 @@ export class LaunchHappyPath {
 
     core.info('Images [pull]...');
     await this.imagesHelper.pull();
-
-    core.info('Workspace [start]...');
-    await this.workspaceHelper.start();
 
     core.info('Happy Path [start]...');
     await this.happyPathHelper.start();

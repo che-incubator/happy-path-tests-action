@@ -15,7 +15,6 @@ import { Container } from 'inversify';
 import { HappyPathHelper } from '../src/happy-path-helper';
 import { ImagesHelper } from '../src/images-helper';
 import { LaunchHappyPath } from '../src/launch-happy-path';
-import { WorkspaceHelper } from '../src/workspace-helper';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -24,7 +23,6 @@ describe('Test LaunchHappyPath', () => {
   let configuration: Configuration;
   let cheHelper: CheHelper;
   let imagesHelper: ImagesHelper;
-  let workspaceHelper: WorkspaceHelper;
   let happyPathHelper: HappyPathHelper;
 
   beforeEach(() => {
@@ -40,11 +38,6 @@ describe('Test LaunchHappyPath', () => {
       pull: jest.fn(),
     } as any;
     container.bind(ImagesHelper).toConstantValue(imagesHelper);
-
-    workspaceHelper = {
-      start: jest.fn(),
-    } as any;
-    container.bind(WorkspaceHelper).toConstantValue(workspaceHelper);
 
     happyPathHelper = {
       start: jest.fn(),
@@ -67,8 +60,6 @@ describe('Test LaunchHappyPath', () => {
     expect(cheHelper.clone).toBeCalled();
 
     expect(imagesHelper.pull).toBeCalled();
-
-    expect(workspaceHelper.start).toBeCalled();
 
     expect(happyPathHelper.start).toBeCalled();
   });
