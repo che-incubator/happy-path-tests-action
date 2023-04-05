@@ -67,6 +67,8 @@ Optional: version of the quay.io/eclipse/che-e2e image to use. Default is `night
 
 This action will set outputs to the current step
 
+
+
 ## workspace-url
 
 URL of the workspace that has been created by Happy Path Tests
