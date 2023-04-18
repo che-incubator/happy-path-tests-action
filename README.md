@@ -1,12 +1,12 @@
 [![codecov](https://img.shields.io/codecov/c/github/che-incubator/happy-path-tests-action)](https://codecov.io/gh/che-incubator/happy-path-tests-action)
 
-# Eclipse Che - Happy Path Tests Action
+# Eclipse Che® - Happy Path Tests Action
 
-This Github action will run Happy Path tests of Eclipse Che
+This Github action will run Happy Path tests of Eclipse Che®
 
 ## pre-requisites:
 
-- running Eclipse Che instance
+- running Eclipse Che® instance
 - tested on ubuntu 20.04
 
 ## how it works:
@@ -70,3 +70,7 @@ This action will set outputs to the current step
 ## workspace-url
 
 URL of the workspace that has been created by Happy Path Tests
+
+# Trademark
+
+"Che" is a trademark of the Eclipse Foundation.
