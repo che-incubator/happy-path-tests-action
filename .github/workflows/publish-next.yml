@@ -4,7 +4,7 @@ name: publish
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   publish:
@@ -36,4 +36,3 @@ jobs:
           git add ./*
           git commit -m "Publish next version $(date +'%Y-%m-%d')" -s
           git push -f "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/che-incubator/happy-path-tests-action.git" next
- 
